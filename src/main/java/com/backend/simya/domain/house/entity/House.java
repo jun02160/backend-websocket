@@ -1,5 +1,6 @@
 package com.backend.simya.domain.house.entity;
 
+import com.backend.simya.domain.chat.entity.ChatRoom;
 import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;
@@ -51,9 +52,8 @@ public class House extends BaseTimeEntity {
     @JsonManagedReference
     private List<Topic> topicList = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "room_id")
-    private String chatRoom;
+    @OneToOne(mappedBy = "house")
+    private ChatRoom chatRoom;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")

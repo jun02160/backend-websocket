@@ -37,7 +37,7 @@ public class ChatRoom implements Serializable {
     @Column
     private String createdAt;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "house_id", nullable = false)
     private House house;
 
