@@ -1,11 +1,9 @@
-package com.backend.simya.domain.chat.service;
+package com.backend.simya.domain.chat.service.chat;
 
-
-import com.backend.simya.domain.chat.dto.ChatMessage;
+import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
 import com.backend.simya.domain.chat.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
@@ -56,14 +54,14 @@ public class ChatService {
      * TALK 상태일 때 실행
      */
 
-    public void sendChatMessage(ChatMessage message) {
-        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
+    public void sendChatMessage(ChatMessageSaveDto message) {
+//        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
 
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
+        if (ChatMessageSaveDto.MessageType.ENTER.equals(message.getType())) {
             log.info(message.getSender() + "님이 방에 입장했습니다");
             message.setMessage(message.getSender() + "님이 방에 입장했습니다");
             message.setSender("[알림]");
-        } else if (ChatMessage.MessageType.QUIT.equals(message.getType())) {
+        } else if (ChatMessageSaveDto.MessageType.QUIT.equals(message.getType())) {
             log.info(message.getSender() + "님이 방에서 나갔습니다.");
             message.setMessage(message.getSender() + "님이 방에서 나갔습니다.");
             message.setSender("[알림]");

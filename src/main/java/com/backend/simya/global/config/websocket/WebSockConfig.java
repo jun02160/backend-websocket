@@ -1,6 +1,5 @@
 package com.backend.simya.global.config.websocket;
 
-import com.backend.simya.global.config.websocket.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -18,7 +17,7 @@ public class WebSockConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws-stomp").setAllowedOriginPatterns("*")
+        registry.addEndpoint("/stomp/chat").setAllowedOriginPatterns("*")
                 .withSockJS();  // sockJs() => 낮은 브라우저에서도 웹 소켓 지원
     }
 

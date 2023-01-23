@@ -1,16 +1,20 @@
 package com.backend.simya.domain.chat.controller;
 
-import com.backend.simya.domain.chat.dto.ChatMessage;
-import com.backend.simya.domain.chat.repository.ChatRoomRepository;
-import com.backend.simya.domain.chat.service.ChatService;
+import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
+import com.backend.simya.domain.chat.service.chat.ChatRedisCacheService;
+import com.backend.simya.domain.chat.service.redis.RedisPublisher;
 import com.backend.simya.domain.jwt.service.AuthService;
 import com.backend.simya.domain.jwt.service.TokenProvider;
 import com.backend.simya.global.common.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 
 /**
@@ -22,27 +26,30 @@ import org.springframework.stereotype.Controller;
 //@Controller
 public class ChatController {
 
+    private final TokenProvider tokenProvider;
+    private final RedisPublisher redisPublisher;
+    private final ChatRedisCacheService chatRedisCacheService;
+    private final ChannelTopic topic;
     private final AuthService authService;
-    private final ChatRoomRepository chatRoomRepository;
-    private final ChatService chatService;
 
     /**
      * WebSocket "/pub/chat/message" 로 들어오는 메시징 처리
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessage message, @Header("token") String token) {
+    public void message(ChatMessageSaveDto message) {
 
         try {
             String nickname = authService.getUsername();
-            log.info("@MessageMapping - nickname: {}", nickname);
-
+            message.setNickname(nickname);
             message.setSender(nickname);         // 로그인 회원 정보로 대화명 설정
-            message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));  // 채팅방 인원 수 세팅
+            message.setType(ChatMessageSaveDto.MessageType.TALK);
+            message.setCreatedAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS")));
 
-            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)s
-            chatService.sendChatMessage(message);
+            // WebSocket 에 발행된 메시지를 Redis 로 발행(publish)
+            redisPublisher.publish(topic, message);
+            chatRedisCacheService.addChat(message);
         } catch (BaseException e) {
-            log.error(e.getStatus().toString());
+            log.error("Not Process @MessageMapping");
         }
 
     }
