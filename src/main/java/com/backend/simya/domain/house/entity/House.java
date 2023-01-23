@@ -52,8 +52,6 @@ public class House extends BaseTimeEntity {
     @JsonManagedReference
     private List<Topic> topicList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "house")
-    private Chat chat;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
