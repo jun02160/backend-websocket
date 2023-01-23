@@ -72,7 +72,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
-                .antMatchers("/", "/h2/**", "/simya/form-login", "/simya/auth", "/simya/form-signup", "/api/**", "/simya/chat/**", "stomp/chat/**", "/chat/**", "/ws/chat", "/ws-stomp", "/pub/**", "/sub/**", "/webjars/**", "/ws-stomp/**").permitAll()
+                .antMatchers("/", "/h2/**", "/simya/form-login", "/simya/auth", "/simya/form-signup", "/api/**", "/simya/chat/**", "/stomp/chat/**", "/chat/**", "/ws/chat", "/ws-stomp", "/pub/**", "/sub/**", "/webjars/**", "/ws-stomp/**").permitAll()
                 .anyRequest().authenticated()
 
                 // TODO 유저 권한을 가진 회원에게만 채팅방 접근 가능하도록

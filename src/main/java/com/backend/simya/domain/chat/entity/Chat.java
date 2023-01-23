@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Data
 @Entity
 @Table(name = "chats")
-public class ChatRoom implements Serializable {
+public class Chat implements Serializable {
 
     private static final long serialVersionUID = 6494678977089006639L;
 
@@ -43,8 +43,8 @@ public class ChatRoom implements Serializable {
 
 //    private long userCount;  // 채팅방 인원 수
 
-    public static ChatRoom of(ChatMessageSaveDto chatMessageSaveDto, House house) {
-        return ChatRoom.builder()
+    public static Chat of(ChatMessageSaveDto chatMessageSaveDto, House house) {
+        return Chat.builder()
                 .message(chatMessageSaveDto.getMessage())
                 .createdAt(chatMessageSaveDto.getCreatedAt())
                 .users(chatMessageSaveDto.getSender())

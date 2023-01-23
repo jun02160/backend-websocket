@@ -1,7 +1,7 @@
 package com.backend.simya.global.util;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import com.backend.simya.domain.chat.repository.ChatRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,11 +52,11 @@ public class ChatUtils {
         log.info("7일 전 날짜 : {}", cursor);
 
         // 7일 전까지의 데이터를 모두 가져와서 Redis 에 적재
-        List<ChatRoom> chatRoomList = chatRepository.findAllByCreatedAtAfterOrderByCreatedAtDesc(cursor);
+        List<Chat> chatList = chatRepository.findAllByCreatedAtAfterOrderByCreatedAtDesc(cursor);
 
-        for (ChatRoom chatRoom : chatRoomList) {
-            ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.of(chatRoom);
-            zSetOperations.add(CHAT_SORTED_SET_ + chatRoom.getHouse().getHouseId(), chatMessageSaveDto, changeLocalDateTimeToDouble(chatRoom.getCreatedAt()));
+        for (Chat chat : chatList) {
+            ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.of(chat);
+            zSetOperations.add(CHAT_SORTED_SET_ + chat.getHouse().getHouseId(), chatMessageSaveDto, changeLocalDateTimeToDouble(chat.getCreatedAt()));
         }
     }
 

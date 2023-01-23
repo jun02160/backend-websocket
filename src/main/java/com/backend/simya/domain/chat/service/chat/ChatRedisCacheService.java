@@ -3,7 +3,7 @@ package com.backend.simya.domain.chat.service.chat;
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
 import com.backend.simya.domain.chat.dto.request.ChatPagingDto;
 import com.backend.simya.domain.chat.dto.response.ChatPagingResponseDto;
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import com.backend.simya.domain.chat.repository.ChatRepository;
 import com.backend.simya.global.util.ChatUtils;
 import lombok.RequiredArgsConstructor;
@@ -107,8 +107,8 @@ public class ChatRedisCacheService {
 
     }
 
-    public void cachingDBDataToRedis(ChatRoom chatRoom) {
-        ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.of(chatRoom);
+    public void cachingDBDataToRedis(Chat chat) {
+        ChatMessageSaveDto chatMessageSaveDto = ChatMessageSaveDto.of(chat);
         redisTemplate.opsForZSet().add(
                 CHAT_SORTED_SET_ + chatMessageSaveDto.getRoomId(),
                 chatMessageSaveDto,
@@ -161,12 +161,12 @@ public class ChatRedisCacheService {
             lastCursor = chatMessageDtoList.get(chatMessageDtoList.size()-1).getCreatedAt();
         }
 
-        Slice<ChatRoom> chatRoomSlice = chatRepository.findAllByCreatedAtBeforeAndHouse_HouseIdOrderByCreatedAtDesc(
+        Slice<Chat> chatRoomSlice = chatRepository.findAllByCreatedAtBeforeAndHouse_HouseIdOrderByCreatedAtDesc(
                 lastCursor, houseId, PageRequest.of(0, 30)
         );
 
-        for (ChatRoom chatRoom : chatRoomSlice.getContent()) {
-            cachingDBDataToRedis(chatRoom);
+        for (Chat chat : chatRoomSlice.getContent()) {
+            cachingDBDataToRedis(chat);
         }
 
         // 추가 데이터가 없다면 그냥 리턴
@@ -177,8 +177,8 @@ public class ChatRedisCacheService {
         // 추가 데이터 존재 시, responseDto 에 데이터 추가
         for (int i=dtoListSize; i<=10; i++) {
             try {
-                ChatRoom chatRoom = chatRoomSlice.getContent().get(i-dtoListSize);
-                chatMessageDtoList.add(ChatPagingResponseDto.of(chatRoom));
+                Chat chat = chatRoomSlice.getContent().get(i-dtoListSize);
+                chatMessageDtoList.add(ChatPagingResponseDto.of(chat));
             } catch (IndexOutOfBoundsException e) {
                 log.error("Index 가 올바르지 않습니다.");
                 return;

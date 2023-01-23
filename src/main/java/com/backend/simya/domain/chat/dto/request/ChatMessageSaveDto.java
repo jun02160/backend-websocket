@@ -1,6 +1,6 @@
 package com.backend.simya.domain.chat.dto.request;
 
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import lombok.*;
 
 import java.util.List;
@@ -33,13 +33,13 @@ public class ChatMessageSaveDto {
     private List<String> userList;
 //    private long userCount;  // 채팅방 인원 수: 채팅방 내에서 메시지가 전달될 때 인원 수 갱신
 
-    public static ChatMessageSaveDto of(ChatRoom chatRoom) {
+    public static ChatMessageSaveDto of(Chat chat) {
         return ChatMessageSaveDto.builder()
                 .type(MessageType.TALK)
-                .roomId(chatRoom.getHouse().getHouseId().toString())
-                .sender(chatRoom.getUsers())
-                .createdAt(chatRoom.getCreatedAt())
-                .message(chatRoom.getMessage())
+                .roomId(chat.getHouse().getHouseId().toString())
+                .sender(chat.getUsers())
+                .createdAt(chat.getCreatedAt())
+                .message(chat.getMessage())
                 .build();
     }
 

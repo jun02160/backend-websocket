@@ -1,7 +1,7 @@
 package com.backend.simya.global.util.scheduler;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import com.backend.simya.domain.chat.repository.ChatJdbcRepository;
 import com.backend.simya.domain.chat.repository.ChatRepository;
 import com.backend.simya.domain.house.entity.House;
@@ -44,7 +44,7 @@ public class ChatWriteBackScheduling {
         BoundZSetOperations<String, ChatMessageSaveDto> setOperations = chatRedisTemplate.boundZSetOps("NEW_CHAT");
         ScanOptions scanOptions = ScanOptions.scanOptions().build();
 
-        List<ChatRoom> chatList = new ArrayList<>();
+        List<Chat> chatList = new ArrayList<>();
         try (Cursor<ZSetOperations.TypedTuple<ChatMessageSaveDto>> cursor = setOperations.scan(scanOptions)) {
             while (cursor.hasNext()) {
                 ZSetOperations.TypedTuple<ChatMessageSaveDto> chatMessageDto = cursor.next();
@@ -55,7 +55,7 @@ public class ChatWriteBackScheduling {
                     continue;
                 }
 
-                chatList.add(ChatRoom.of(chatMessageDto.getValue(), house));
+                chatList.add(Chat.of(chatMessageDto.getValue(), house));
             }
             chatJdbcRepository.batchInsertRoomInventories(chatList);
             redisTemplate.delete("NEW_CHAT");

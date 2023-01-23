@@ -1,6 +1,6 @@
 package com.backend.simya.domain.chat.repository;
 
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,18 +16,18 @@ public class ChatJdbcRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void batchInsertRoomInventories(List<ChatRoom> chatList) {
+    public void batchInsertRoomInventories(List<Chat> chatList) {
         String sql = "INSERT INTO chats" +
                 "(message, users, house_id, created_at) VALUES(?,?,?,?)";
 
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ChatRoom chatRoom = chatList.get(i);
-                ps.setString(1, chatRoom.getMessage());
-                ps.setString(2, chatRoom.getUsers());
-                ps.setLong(3, chatRoom.getHouse().getHouseId());
-                ps.setString(4, chatRoom.getCreatedAt());
+                Chat chat = chatList.get(i);
+                ps.setString(1, chat.getMessage());
+                ps.setString(2, chat.getUsers());
+                ps.setLong(3, chat.getHouse().getHouseId());
+                ps.setString(4, chat.getCreatedAt());
             }
 
             @Override

@@ -50,6 +50,7 @@ public class StompHandler implements ChannelInterceptor {
         // WebSocket 연결 시, 헤더의 JWT Token 검증
         if (StompCommand.CONNECT == accessor.getCommand()) {   // 최초 소켓 연결 : 채팅룸 연결 요청
 
+            log.info("Web Socket 연결 성공 !");
             String accessToken = accessor.getFirstNativeHeader("token");  // TODO Token 헤더 이름 변경?
             if (tokenProvider.validateToken(accessToken)) {
                 log.info("CONNECT {}", accessToken);

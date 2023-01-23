@@ -21,6 +21,9 @@ public class ChatDataController {
 
     private final ChatRedisCacheService chatRedisCacheService;
 
+    /**
+     * 채팅 Cursor Paging 을 통해 조회
+     */
     @PostMapping("/api/chats/{houseId}")
     public List<ChatPagingResponseDto> getChatting(@PathVariable Long houseId, @RequestBody(required = false) ChatPagingDto chatPagingDto) {
 

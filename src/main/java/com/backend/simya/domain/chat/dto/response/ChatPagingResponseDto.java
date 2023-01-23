@@ -1,7 +1,7 @@
 package com.backend.simya.domain.chat.dto.response;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
-import com.backend.simya.domain.chat.entity.ChatRoom;
+import com.backend.simya.domain.chat.entity.Chat;
 import lombok.*;
 
 @Getter @Setter
@@ -16,12 +16,12 @@ public class ChatPagingResponseDto {
     private String createdAt;
     private String nickname;  // TODO sender 와 nickname 둘 다 필요할까? sender(User)-nickname(Profile) 의 관계면 OK
 
-    public static ChatPagingResponseDto of(ChatRoom chatRoom) {
+    public static ChatPagingResponseDto of(Chat chat) {
         return ChatPagingResponseDto.builder()
-                .sender(chatRoom.getUsers())
-                .houseId(chatRoom.getHouse().getHouseId())
-                .createdAt(chatRoom.getCreatedAt())
-                .message(chatRoom.getMessage())
+                .sender(chat.getUsers())
+                .houseId(chat.getHouse().getHouseId())
+                .createdAt(chat.getCreatedAt())
+                .message(chat.getMessage())
                 .build();
     }
 
