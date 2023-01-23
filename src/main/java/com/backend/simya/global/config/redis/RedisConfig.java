@@ -2,6 +2,7 @@ package com.backend.simya.global.config.redis;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
 import com.backend.simya.domain.chat.service.redis.RedisSubscriber;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
@@ -21,6 +23,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
+@Slf4j
 @Configuration
 public class RedisConfig {
 
@@ -45,6 +48,7 @@ public class RedisConfig {
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter, ChannelTopic channelTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        log.info("RedisMessageListenerContainer 실행");
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, channelTopic);
         return container;
@@ -52,8 +56,7 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory lettuceConnectionFactory() {
-        LettuceConnectionFactory lettuceConnectionFactory = new LettuceConnectionFactory(redisHostName, redisPort);
-        return lettuceConnectionFactory;
+        return new LettuceConnectionFactory(redisHostName, redisPort);
     }
 
     /**
@@ -87,11 +90,11 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate<String, ChatMessageSaveDto> chatRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, ChatMessageSaveDto> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessageSaveDto.class));
-        return redisTemplate;
+        RedisTemplate<String, ChatMessageSaveDto> chatRedisTemplate = new RedisTemplate<>();
+        chatRedisTemplate.setConnectionFactory(connectionFactory);
+        chatRedisTemplate.setKeySerializer(new StringRedisSerializer());
+        chatRedisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(ChatMessageSaveDto.class));
+        return chatRedisTemplate;
     }
 
     @Bean
