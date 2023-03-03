@@ -1,3 +1,4 @@
+/*
 package com.backend.simya.global.util;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
@@ -26,9 +27,11 @@ public class ChatUtils {
     private final RedisTemplate<String, ChatMessageSaveDto> chatRedisTemplate;
     private ZSetOperations<String, ChatMessageSaveDto> zSetOperations;
 
-    /**
+    */
+/**
      * Destination 으로부터 roomId 값 조회
-     */
+     *//*
+
     public String getRoomIdFromDestination(String destination) {
         int lastIdx = destination.lastIndexOf('/');
         if (lastIdx != -1) {
@@ -38,9 +41,11 @@ public class ChatUtils {
         }
     }
 
-    /**
+    */
+/**
      * 7일 전까지의 Chat Data DB -> Redis 로 Insert
-     */
+     *//*
+
     public void cachingDataToRedisFromDB() {
         zSetOperations = chatRedisTemplate.opsForZSet();
 
@@ -60,12 +65,15 @@ public class ChatUtils {
         }
     }
 
-    /**
+    */
+/**
      * 채팅 데이터 생성일자 Double 형으로 형 변환
-     */
+     *//*
+
     public Double changeLocalDateTimeToDouble(String createdAt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
         LocalDateTime localDateTime = LocalDateTime.parse(createdAt, formatter);
         return ((Long) localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()).doubleValue();
     }
 }
+*/

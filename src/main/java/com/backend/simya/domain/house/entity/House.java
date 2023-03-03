@@ -1,6 +1,5 @@
 package com.backend.simya.domain.house.entity;
 
-import com.backend.simya.domain.chat.entity.Chat;
 import com.backend.simya.domain.favorite.entity.Favorite;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
 import com.backend.simya.domain.profile.entity.Profile;

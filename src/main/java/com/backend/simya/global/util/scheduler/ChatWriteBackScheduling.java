@@ -1,3 +1,4 @@
+/*
 package com.backend.simya.global.util.scheduler;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
@@ -16,13 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+*/
 /**
  * Redis 데이터 쓰기 캐싱 전략 : Write Back
  * - Data 캐시에 저장 -> 캐시에 있는 데이터 일정 기간동안 보관 -> 모여있는 데이터 DB에 저장 -> 캐시에 있는 데이터 삭제
  *
  * 스케줄링을 통해 1시간마다 Redis 에 있는 데이터를 List 로 바꾼 후,
  * Batch Insert 를 Query 를 통해 데이터 MySQL 에 삽입
- */
+ *//*
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -67,3 +70,4 @@ public class ChatWriteBackScheduling {
     }
 
 }
+*/

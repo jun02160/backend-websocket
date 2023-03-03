@@ -1,3 +1,4 @@
+/*
 package com.backend.simya.global.util.scheduler;
 
 import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
@@ -47,3 +48,4 @@ public class ChatCachingInRedisScheduling {
         chatUtils.cachingDataToRedisFromDB();
     }
 }
+*/

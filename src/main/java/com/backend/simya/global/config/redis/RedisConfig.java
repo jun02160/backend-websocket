@@ -1,7 +1,6 @@
+/*
 package com.backend.simya.global.config.redis;
 
-import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
-import com.backend.simya.domain.chat.service.redis.RedisSubscriber;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -34,17 +33,21 @@ public class RedisConfig {
 
     @Value("${spring.redis.port}")
     private int redisPort;
-    /**
+    */
+/**
      * 단일 Topic 사용을 위한 Bean 설정
-     */
+     *//*
+
     @Bean
     public ChannelTopic channelTopic() {
         return new ChannelTopic(CHAT_TOPIC);
     }
 
-    /**
+    */
+/**
      * redis pub/sub 메시지를 처리하는 listener 설정
-     */
+     *//*
+
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory connectionFactory, MessageListenerAdapter listenerAdapter, ChannelTopic channelTopic) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -59,17 +62,21 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisHostName, redisPort);
     }
 
-    /**
+    */
+/**
      * 실제 메시지를 처리하는 subscriber 설정 추가
-     */
+     *//*
+
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber, "sendMessage");
     }
 
-    /**
+    */
+/**
      * 어플리케이션 사용할 redisTemplate 설정
-     */
+     *//*
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -112,3 +119,4 @@ public class RedisConfig {
         return redisCacheManager;
     }
 }
+*/
