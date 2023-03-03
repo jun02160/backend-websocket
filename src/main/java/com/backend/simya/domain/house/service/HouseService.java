@@ -3,8 +3,7 @@ package com.backend.simya.domain.house.service;
 
 import com.backend.simya.domain.house.dto.request.HouseOpenRequestDto;
 import com.backend.simya.domain.house.dto.request.HouseUpdateRequestDto;
-import com.backend.simya.domain.house.dto.request.NewHouseRequestDto;
-import com.backend.simya.domain.house.dto.request.TopicRequestDto;
+import com.backend.simya.domain.house.dto.request.HouseCreateRequestDto;
 import com.backend.simya.domain.house.dto.response.HouseIntroductionResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseResponseDto;
 import com.backend.simya.domain.house.dto.response.HouseSignboardResponseDto;
@@ -14,18 +13,18 @@ import com.backend.simya.domain.house.entity.House;
 import com.backend.simya.domain.house.entity.Topic;
 import com.backend.simya.domain.house.repository.HouseRepository;
 import com.backend.simya.domain.profile.entity.Profile;
-import com.backend.simya.domain.profile.service.ProfileService;
-import com.backend.simya.domain.review.dto.ReviewResponseDto;
-import com.backend.simya.domain.review.entity.Review;
-import com.backend.simya.domain.review.service.ReviewService;
 import com.backend.simya.domain.user.entity.User;
 import com.backend.simya.global.common.BaseException;
-import com.backend.simya.global.common.BaseResponse;
+import com.backend.simya.global.util.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.backend.simya.global.common.BaseResponseStatus.*;
@@ -37,13 +36,22 @@ public class HouseService {
 
     private final HouseRepository houseRepository;
     private final TopicService topicService;
+    private final S3Uploader s3Uploader;
 
 
     // 새 이야기 집 생성
     @Transactional
-    public HouseResponseDto createHouse(Profile masterProfile, NewHouseRequestDto newHouseRequestDto) throws BaseException {
+    public HouseResponseDto createHouse(HouseCreateRequestDto newHouseRequestDto,
+                                        MultipartFile signboardImage,
+                                        Profile masterProfile) throws BaseException {
         try {
-            House savedHouse = houseRepository.save(newHouseRequestDto.toEntity(masterProfile));
+            String signboardImageUrl;
+            if (signboardImage == null) {
+                signboardImageUrl = "default";
+            } else {
+                signboardImageUrl = s3Uploader.uploadImage(signboardImage);
+            }
+            House savedHouse = houseRepository.save(newHouseRequestDto.toEntity(masterProfile, signboardImageUrl));
             return HouseResponseDto.from(savedHouse);
         } catch (Exception ignored) {
             throw new BaseException(DATABASE_ERROR);
@@ -71,7 +79,7 @@ public class HouseService {
 
     public House findHouse(Long houseId) throws BaseException {
         return houseRepository.findById(houseId).orElseThrow(
-                () -> new BaseException(HOUSE_NOT_FOUND)
+                () -> new BaseException(FAILED_TO_FIND_HOUSE)
         );
     }
 
@@ -101,6 +109,7 @@ public class HouseService {
     @Transactional
     public void deleteHouse(User loginUser, Long houseId) throws BaseException {
         House houseToDelete = findHouse(houseId);
+        s3Uploader.deleteImage(houseToDelete.getSignboardImageUrl());
         if (!loginUser.getUserId().equals(houseToDelete.getProfile().getProfileId())) {
             throw new BaseException(FAILED_TO_CLOSE);
         } else {
@@ -134,7 +143,7 @@ public class HouseService {
     public List<HouseResponseDto> getMyHouses(Long currentUserId) {
 
         return houseRepository.findMyHousesByUserId(currentUserId).stream()
-                .filter(House::isOpen)
+                .filter(Objects::nonNull)
                 .map(HouseResponseDto::from)
                 .collect(Collectors.toList());
     }

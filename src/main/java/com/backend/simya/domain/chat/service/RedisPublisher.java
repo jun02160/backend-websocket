@@ -1,6 +1,6 @@
-package com.backend.simya.domain.chat.service.redis;
+package com.backend.simya.domain.chat.service;
 
-import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -18,7 +18,7 @@ public class RedisPublisher {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public void publish(ChannelTopic topic, ChatMessageSaveDto message) {
+    public void publish(ChannelTopic topic, ChatMessageCustom message) {
         redisTemplate.convertAndSend(topic.getTopic(), message);
     }
 }

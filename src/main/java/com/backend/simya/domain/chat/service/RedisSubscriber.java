@@ -1,6 +1,6 @@
-package com.backend.simya.domain.chat.service.redis;
+package com.backend.simya.domain.chat.service;
 
-import com.backend.simya.domain.chat.dto.request.ChatMessageSaveDto;
+import com.backend.simya.domain.chat.dto.ChatMessageCustom;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,15 @@ public class RedisSubscriber {
      * Redis 에서 pub 으로 메시지가 발행되면 대기하고 있던 onMessage 가 해당 메시지를 받아서 처리한다.
      */
     public void sendMessage(String publishMessage) {
+        log.info("RedisSubscriber 실행");
         try {
+            log.info("objectMapper.readValue() 전");
             // ChatMessage 객체로 매핑
-            ChatMessageSaveDto chatMessageSaveDto = objectMapper.readValue(publishMessage, ChatMessageSaveDto.class);
+            ChatMessageCustom chatMessage = objectMapper.readValue(publishMessage, ChatMessageCustom.class);
+            log.info("objectMapper.readValue() 후");
+
             // WebSocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageSaveDto.getRoomId(), chatMessageSaveDto);
+            messagingTemplate.convertAndSend("/sub/simya/chat/room/" + chatMessage.getRoomId(), chatMessage);
         } catch (Exception e) {
             log.error("Exception {}", e);
         }

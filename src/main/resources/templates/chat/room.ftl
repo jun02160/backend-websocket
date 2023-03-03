@@ -53,10 +53,11 @@
         },
         methods: {
             findAllRoom: function() {
-                axios.get('/chat/rooms').then(response => {
+                axios.get('/simya/chat/rooms').then(response => {
                     // prevent html, allow json array
                     if(Object.prototype.toString.call(response.data) === "[object Array]")
                         this.chatrooms = response.data;
+                    console.log(this.chatrooms);
                 });
             },
             createRoom: function() {
@@ -66,7 +67,7 @@
                 } else {
                     var params = new URLSearchParams();
                     params.append("name",this.room_name);
-                    axios.post('/chat/room', params)
+                    axios.post('/simya/chat/room', params)
                         .then(
                             response => {
                                 alert(response.data.name+"방 개설에 성공하였습니다.")
@@ -80,7 +81,7 @@
             enterRoom: function(roomId, roomName) {
                 localStorage.setItem('wschat.roomId',roomId);
                 localStorage.setItem('wschat.roomName',roomName);
-                location.href="/chat/room/enter/"+roomId;
+                location.href="/simya/chat/room/enter/"+roomId;
             }
         }
     });
